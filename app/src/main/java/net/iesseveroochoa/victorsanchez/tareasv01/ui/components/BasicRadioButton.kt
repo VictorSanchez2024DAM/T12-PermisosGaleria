@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
  * Función que muestra un radioButton
  */
 @Composable
-fun radioButton(
+fun basicRadioButton(
     selectedOption: String,
     onOptionSelected: (String) -> Unit,
     radioOptions: List<String>,

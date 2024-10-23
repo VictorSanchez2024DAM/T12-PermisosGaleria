@@ -12,7 +12,7 @@ import androidx.compose.ui.res.stringResource
  * Muestra un campo de texto.
  */
 @Composable
-fun MostrarOutlinedTextField(
+fun showOutlinedTextField(
     @StringRes label: Int,
     keyboardOptions: KeyboardOptions,
     value: String,

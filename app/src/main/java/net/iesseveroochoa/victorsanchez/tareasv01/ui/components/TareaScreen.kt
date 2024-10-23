@@ -40,7 +40,7 @@ import net.iesseveroochoa.victorsanchez.tareasv01.ui.theme.ColorPrioridadAlta
  * Función que muestra la interfaz de la aplicación tarea.
  */
 @Composable
-fun TaskScreen(modifier: Modifier = Modifier){
+fun taskScreen(modifier: Modifier = Modifier){
     val categorias = stringArrayResource(id = R.array.categorias).toList()
     var categoriaActual by remember { mutableStateOf(categorias[0]) }
     val prioridades = stringArrayResource(id = R.array.prioridad).toList()
@@ -66,7 +66,7 @@ fun TaskScreen(modifier: Modifier = Modifier){
                 modifier = modifier.weight(1f),
             ){
                 //Mostrar el campo de texto para la categoría
-                DynamicSelectTextField(
+                dynamicSelectTextField(
                     selectedValue = categoriaActual,
                     options = categorias,
                     label = stringResource(R.string.categor_a),
@@ -76,7 +76,7 @@ fun TaskScreen(modifier: Modifier = Modifier){
                     modifier = Modifier.padding(bottom = 10.dp)
                 )
                 //Mostrar el campo de texto para la prioridad
-                DynamicSelectTextField(
+                dynamicSelectTextField(
                     selectedValue = prioridadActual,
                     options = prioridades,
                     label = stringResource(R.string.prioridad),
@@ -131,9 +131,11 @@ fun TaskScreen(modifier: Modifier = Modifier){
             }
         }
         //Mostrar el radio button con las opciones de estado
-        radioButton(selectedOption, onOptionSelected, radioOptions)
+        basicRadioButton(selectedOption, onOptionSelected, radioOptions)
+
+
         //Mostrar el rating bar con la valoracion
-        RatingBar(
+        ratingBar(
             currentRating = currentRating,
             onRatingChanged = { currentRating = when(it){
                 1->5
@@ -145,7 +147,7 @@ fun TaskScreen(modifier: Modifier = Modifier){
             } }
         )
         //Mostrar el campo de texto para el tecnico y la descripcion con scroll vertical
-        MostrarOutlinedTextField(
+        showOutlinedTextField(
             label = R.string.tecnico,
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Text,
@@ -162,7 +164,7 @@ fun TaskScreen(modifier: Modifier = Modifier){
                 .verticalScroll(rememberScrollState())
         ){
             //Mostrar el campo de texto para la descripcion
-            MostrarOutlinedTextField(
+            showOutlinedTextField(
                 label = R.string.descripcion,
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Text,
@@ -181,5 +183,5 @@ fun TaskScreen(modifier: Modifier = Modifier){
 @Preview(showBackground = true)
 @Composable
 fun TaskScreenPreview() {
-    TaskScreen()
+    taskScreen()
 }

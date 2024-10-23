@@ -25,7 +25,7 @@ import net.iesseveroochoa.victorsanchez.tareasv01.R
  * modifier - modificador
  */
 @Composable
-fun RatingBar(
+fun ratingBar(
     currentRating: Int,
     onRatingChanged: (Int) -> Unit,
     modifier: Modifier = Modifier,

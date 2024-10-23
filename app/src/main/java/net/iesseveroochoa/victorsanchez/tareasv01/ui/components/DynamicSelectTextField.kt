@@ -20,7 +20,7 @@ Funcion composable que muestra un menú desplegable con opciones.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DynamicSelectTextField(
+fun dynamicSelectTextField(
     selectedValue: String,
     options: List<String>,
     label: String,
