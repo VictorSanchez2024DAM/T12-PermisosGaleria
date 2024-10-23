@@ -177,6 +177,7 @@ fun TaskScreen(modifier: Modifier = Modifier){
         }
     }
 }
+// Vista previa de la funcion TaskScreen
 @Preview(showBackground = true)
 @Composable
 fun TaskScreenPreview() {
