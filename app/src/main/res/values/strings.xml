@@ -1,23 +1,5 @@
 <resources>
     <string name="app_name">TareasV01</string>
-    <string name="category_label">Categoría</string>
-    <string name="priority_label">Prioridad</string>
-    <string name="selecciona_imagen">Selecciona Imagen</string>
-    <string name="tecnico_label">Técnico</string>
-    <string name="descripcion_label">Descripción</string>
-    <string-array name="category_array">
-        <item>Trabajo</item>
-        <item>Estudio</item>
-        <item>Ocio</item>
-    </string-array>
-    <string-array name="priority_array">
-        <item>Baja</item>
-        <item>Media</item>
-        <item>Alta</item>
-    </string-array>
-    <string-array name="state_array">
-        <item>Abierta</item>
-        <item>En curso</item>
-        <item>Cerrada</item>
-    </string-array>
+    <string name="valoracion">Valoracion</string>
+
 </resources>
