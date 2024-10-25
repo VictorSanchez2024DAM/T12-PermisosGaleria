@@ -8,6 +8,9 @@
     <string name="est_pagado">Está pagado</string>
     <string name="estado_de_la_tarea">Estado de la tarea</string>
     <string name="icono_dialogo">Icono Dialogo</string>
+    <string name="atenci_n">Atención</string>
+    <string name="desea_guardar_los_cambios">Desea guardar los cambios?</string>
+    <string name="guardar">guardar</string>
     <string-array name="prioridad">
         <item>Alta</item>
         <item>Media</item>

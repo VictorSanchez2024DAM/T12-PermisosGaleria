@@ -20,6 +20,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -41,6 +43,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.launch
 import net.iesseveroochoa.victorsanchez.tareasv01.R
 import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.DialogoDeConfirmacion
 import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.basicRadioButton
@@ -70,17 +73,23 @@ fun taskScreen(viewModel: TareaViewModel = viewModel(),
     // var descripcionValue by remember { mutableStateOf("") }
     // val PRIORIDAD_ALTA = prioridades[0]
     // val colorFondo = if (PRIORIDAD_ALTA==prioridadActual) ColorPrioridadAlta else Color.Transparent
+
+
+    // Muestra la interfaz de la aplicación con un Scaffold
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        snackbarHost = { SnackbarHost(snackbarHostState) },  // Asegura que el SnackbarHost esté bien configurado
+        // Configura el SnackbarHost
+        snackbarHost = { SnackbarHost(uiStateTarea.snackbarHostState) },
+        // Configura el botón flotante
         floatingActionButton = {
             FloatingActionButton(
-                onClick = {
+
+                onClick = { // Cuando se hace clic en el botón flotante se llama a la función onGuardar
                     if (uiStateTarea.esFormularioValido) {
                         viewModel.onGuardar()
                     } else {
-                        scope.launch {
-                            snackbarHostState.showSnackbar(
+                        uiStateTarea.scope.launch {
+                            uiStateTarea.snackbarHostState.showSnackbar(
                                 message = "Rellene todos los campos",
                                 duration = SnackbarDuration.Short
                             )
@@ -88,9 +97,10 @@ fun taskScreen(viewModel: TareaViewModel = viewModel(),
                     }
                 }
             ) {
+                // Muestra un ícono de guardar
                 Icon(
                     painter = painterResource(android.R.drawable.ic_menu_save),  // Ícono de guardar
-                    contentDescription = "guardar"
+                    contentDescription = stringResource(R.string.guardar)
                 )
             }
         }
@@ -232,15 +242,15 @@ fun taskScreen(viewModel: TareaViewModel = viewModel(),
                 onConfirmation = {
                     //guardaría los cambios
                     viewModel.onConfirmarDialogoGuardar()
-                    scope.launch {
-                        snackbarHostState.showSnackbar(
+                    uiStateTarea.scope.launch {
+                        uiStateTarea.snackbarHostState.showSnackbar(
                             message = "Tarea guardada",
                             duration = SnackbarDuration.Short
                         )
                     }
                 },
-                dialogTitle = "Atención",
-                dialogText = "Desea guardar los cambios?",
+                dialogTitle = stringResource(R.string.atenci_n),
+                dialogText = stringResource(R.string.desea_guardar_los_cambios),
                 icon = Icons.Default.Info
             )
         }
