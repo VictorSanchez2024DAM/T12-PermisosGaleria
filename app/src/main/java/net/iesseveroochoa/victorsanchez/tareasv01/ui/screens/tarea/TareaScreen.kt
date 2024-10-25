@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -63,10 +64,13 @@ fun taskScreen(viewModel: TareaViewModel = viewModel(),
     // var descripcionValue by remember { mutableStateOf("") }
     // val PRIORIDAD_ALTA = prioridades[0]
     // val colorFondo = if (PRIORIDAD_ALTA==prioridadActual) ColorPrioridadAlta else Color.Transparent
+    Scaffold(
+        modifier = Modifier.fillMaxSize()
+    ) { innerPadding ->
     Column (
         modifier = modifier
             .background(color = uiStateTarea.colorFondo)
-            .padding(top = 32.dp, start = 8.dp, end = 8.dp, bottom = 8.dp)
+            .padding(innerPadding)
             .fillMaxSize()
     ){
         Row (
@@ -191,7 +195,9 @@ fun taskScreen(viewModel: TareaViewModel = viewModel(),
             )
         }
     }
+    }
 }
+
 // Vista previa de la funcion TaskScreen
 @Preview(showBackground = true)
 @Composable
