@@ -13,8 +13,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,11 +42,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import net.iesseveroochoa.victorsanchez.tareasv01.R
+import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.DialogoDeConfirmacion
 import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.basicRadioButton
 import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.dynamicSelectTextField
 import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.ratingBar
 import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.showOutlinedTextField
-import net.iesseveroochoa.victorsanchez.tareasv01.ui.theme.ColorPrioridadAlta
+
 
 /**
  * Función que muestra la interfaz de la aplicación tarea.
@@ -65,8 +71,30 @@ fun taskScreen(viewModel: TareaViewModel = viewModel(),
     // val PRIORIDAD_ALTA = prioridades[0]
     // val colorFondo = if (PRIORIDAD_ALTA==prioridadActual) ColorPrioridadAlta else Color.Transparent
     Scaffold(
-        modifier = Modifier.fillMaxSize()
-    ) { innerPadding ->
+        modifier = Modifier.fillMaxSize(),
+        snackbarHost = { SnackbarHost(snackbarHostState) },  // Asegura que el SnackbarHost esté bien configurado
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    if (uiStateTarea.esFormularioValido) {
+                        viewModel.onGuardar()
+                    } else {
+                        scope.launch {
+                            snackbarHostState.showSnackbar(
+                                message = "Rellene todos los campos",
+                                duration = SnackbarDuration.Short
+                            )
+                        }
+                    }
+                }
+            ) {
+                Icon(
+                    painter = painterResource(android.R.drawable.ic_menu_save),  // Ícono de guardar
+                    contentDescription = "guardar"
+                )
+            }
+        }
+    ) { innerPadding  ->
     Column (
         modifier = modifier
             .background(color = uiStateTarea.colorFondo)
@@ -192,6 +220,28 @@ fun taskScreen(viewModel: TareaViewModel = viewModel(),
                 singleLine = false,
                 modifier = Modifier
                     .fillMaxWidth()
+            )
+        }
+        //Dialogo de confirmación
+        if (uiStateTarea.mostrarDialogo) {
+            DialogoDeConfirmacion(
+                onDismissRequest = {
+                    //cancela el dialogo
+                    viewModel.onCancelarDialogoGuardar()
+                },
+                onConfirmation = {
+                    //guardaría los cambios
+                    viewModel.onConfirmarDialogoGuardar()
+                    scope.launch {
+                        snackbarHostState.showSnackbar(
+                            message = "Tarea guardada",
+                            duration = SnackbarDuration.Short
+                        )
+                    }
+                },
+                dialogTitle = "Atención",
+                dialogText = "Desea guardar los cambios?",
+                icon = Icons.Default.Info
             )
         }
     }
