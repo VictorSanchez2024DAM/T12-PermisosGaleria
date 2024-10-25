@@ -51,17 +51,17 @@ fun taskScreen(viewModel: TareaViewModel = viewModel(),
 
     val uiStateTarea by viewModel.uiStateTarea.collectAsState()
 
-    val categorias = stringArrayResource(id = R.array.categorias).toList()
-    var categoriaActual by remember { mutableStateOf(categorias[0]) }
+    // val categorias = stringArrayResource(id = R.array.categorias).toList()
+    // var categoriaActual by remember { mutableStateOf(categorias[0]) }
     // val prioridades = stringArrayResource(id = R.array.prioridad).toList()
     // var prioridadActual by remember { mutableStateOf(prioridades[2]) }
-    var isChecked by remember { mutableStateOf(false) }
-    val radioOptions = stringArrayResource(R.array.estado).toList()
-    val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[0]) }
-    var currentRating by remember { mutableIntStateOf(0) }
-    var tecnicoValue by remember { mutableStateOf("") }
-    var descripcionValue by remember { mutableStateOf("") }
-   //  val PRIORIDAD_ALTA = prioridades[0]
+    // var isChecked by remember { mutableStateOf(false) }
+    // val radioOptions = stringArrayResource(R.array.estado).toList()
+    // val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[0]) }
+    // var currentRating by remember { mutableIntStateOf(0) }
+    // var tecnicoValue by remember { mutableStateOf("") }
+    // var descripcionValue by remember { mutableStateOf("") }
+    // val PRIORIDAD_ALTA = prioridades[0]
     // val colorFondo = if (PRIORIDAD_ALTA==prioridadActual) ColorPrioridadAlta else Color.Transparent
     Column (
         modifier = modifier
@@ -77,11 +77,11 @@ fun taskScreen(viewModel: TareaViewModel = viewModel(),
             ){
                 //Mostrar el campo de texto para la categoría
                 dynamicSelectTextField(
-                    selectedValue = categoriaActual,
-                    options = categorias,
+                    selectedValue = uiStateTarea.categoria,
+                    options = viewModel.categorias,
                     label = stringResource(R.string.categor_a),
                     onValueChangedEvent = {
-                        categoriaActual = it
+                        viewModel.onValueChangeCategoria(it)
                     },
                     modifier = Modifier.padding(bottom = 10.dp)
                 )
@@ -111,7 +111,7 @@ fun taskScreen(viewModel: TareaViewModel = viewModel(),
             verticalAlignment = CenterVertically,
         ) {
             //Icono de pagado o no pagado segun el estado actual
-            if (isChecked)
+            if (uiStateTarea.checked)
                 Icon(painterResource(R.drawable.ic_pagado), contentDescription = null, modifier = Modifier.padding(8.dp))
             else
                 Icon(painterResource(R.drawable.ic_no_pagado), contentDescription = null, modifier = Modifier.padding(8.dp))
@@ -121,8 +121,8 @@ fun taskScreen(viewModel: TareaViewModel = viewModel(),
                     .padding(5.dp)
             )
             Switch(
-                checked = isChecked,
-                onCheckedChange = { isChecked = it },
+                checked = uiStateTarea.checked,
+                onCheckedChange = { viewModel.onCheckedChange(it)},
                 modifier = Modifier.padding(5.dp)
             )
         }
@@ -134,27 +134,30 @@ fun taskScreen(viewModel: TareaViewModel = viewModel(),
                 modifier = Modifier.padding(5.dp)
             )
             //Icono de la tarea segun su estado actual
-            when (selectedOption) {
-            radioOptions[0] -> Icon(painterResource(R.drawable.ic_abierto), contentDescription = null, modifier = Modifier.padding(8.dp))
-                radioOptions[1] -> Icon(painterResource(R.drawable.ic_encurso), contentDescription = null, modifier = Modifier.padding(8.dp))
-                radioOptions[2] -> Icon(painterResource(R.drawable.ic_cerrado), contentDescription = null, modifier = Modifier.padding(8.dp))
+            when (uiStateTarea.estado) {
+            viewModel.radioOptions[0] -> Icon(painterResource(R.drawable.ic_abierto), contentDescription = null, modifier = Modifier.padding(8.dp))
+                viewModel.radioOptions[1] -> Icon(painterResource(R.drawable.ic_encurso), contentDescription = null, modifier = Modifier.padding(8.dp))
+                viewModel.radioOptions[2] -> Icon(painterResource(R.drawable.ic_cerrado), contentDescription = null, modifier = Modifier.padding(8.dp))
             }
         }
         //Mostrar el radio button con las opciones de estado
-        basicRadioButton(selectedOption, onOptionSelected, radioOptions)
+        basicRadioButton(uiStateTarea.estado, viewModel::onValueChangeEstado, viewModel.radioOptions)
 
 
         //Mostrar el rating bar con la valoracion
         ratingBar(
-            currentRating = currentRating,
-            onRatingChanged = { currentRating = when(it){
+            currentRating = uiStateTarea.valoracion,
+            onRatingChanged = { val nuevaValoracion = when(it)
+            {
                 1->5
                 2->4
                 3->3
                 4->2
                 5->1
                 else -> 0
-            } }
+            }
+                viewModel.onRatingChanged(nuevaValoracion)
+            }
         )
         //Mostrar el campo de texto para el tecnico y la descripcion con scroll vertical
         showOutlinedTextField(
@@ -163,8 +166,8 @@ fun taskScreen(viewModel: TareaViewModel = viewModel(),
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Next
             ),
-            value = tecnicoValue,
-            onValueChange = { tecnicoValue = it },
+            value = uiStateTarea.tecnico,
+            onValueChange = { viewModel.onValueChangeTecnico(it) },
             modifier = Modifier
                 .fillMaxWidth()
         )
@@ -180,8 +183,8 @@ fun taskScreen(viewModel: TareaViewModel = viewModel(),
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Done
                 ),
-                value = descripcionValue,
-                onValueChange = { descripcionValue = it },
+                value = uiStateTarea.descripcion,
+                onValueChange = { viewModel.onValueChangeDescripcion(it) },
                 singleLine = false,
                 modifier = Modifier
                     .fillMaxWidth()

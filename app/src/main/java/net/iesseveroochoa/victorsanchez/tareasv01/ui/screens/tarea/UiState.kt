@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.Color
 data class UiStateTarea(
     val categoria: String = "",
     val prioridad: String = "",
-    val pagado: Boolean = false,
+    val checked: Boolean = false,
     val estado: String = "",
     val valoracion: Int = 0,
     val tecnico: String = "",
