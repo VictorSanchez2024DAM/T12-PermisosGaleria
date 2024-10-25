@@ -17,6 +17,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -33,6 +34,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import net.iesseveroochoa.victorsanchez.tareasv01.R
 import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.basicRadioButton
 import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.dynamicSelectTextField
@@ -44,22 +46,26 @@ import net.iesseveroochoa.victorsanchez.tareasv01.ui.theme.ColorPrioridadAlta
  * Función que muestra la interfaz de la aplicación tarea.
  */
 @Composable
-fun taskScreen(modifier: Modifier = Modifier){
+fun taskScreen(viewModel: TareaViewModel = viewModel(),
+               modifier: Modifier = Modifier){
+
+    val uiStateTarea by viewModel.uiStateTarea.collectAsState()
+
     val categorias = stringArrayResource(id = R.array.categorias).toList()
     var categoriaActual by remember { mutableStateOf(categorias[0]) }
-    val prioridades = stringArrayResource(id = R.array.prioridad).toList()
-    var prioridadActual by remember { mutableStateOf(prioridades[2]) }
+    // val prioridades = stringArrayResource(id = R.array.prioridad).toList()
+    // var prioridadActual by remember { mutableStateOf(prioridades[2]) }
     var isChecked by remember { mutableStateOf(false) }
     val radioOptions = stringArrayResource(R.array.estado).toList()
     val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[0]) }
     var currentRating by remember { mutableIntStateOf(0) }
     var tecnicoValue by remember { mutableStateOf("") }
     var descripcionValue by remember { mutableStateOf("") }
-    val PRIORIDAD_ALTA = prioridades[0]
-    val colorFondo = if (PRIORIDAD_ALTA==prioridadActual) ColorPrioridadAlta else Color.Transparent
+   //  val PRIORIDAD_ALTA = prioridades[0]
+    // val colorFondo = if (PRIORIDAD_ALTA==prioridadActual) ColorPrioridadAlta else Color.Transparent
     Column (
         modifier = modifier
-            .background(color = colorFondo)
+            .background(color = uiStateTarea.colorFondo)
             .padding(top = 32.dp, start = 8.dp, end = 8.dp, bottom = 8.dp)
             .fillMaxSize()
     ){
@@ -81,11 +87,11 @@ fun taskScreen(modifier: Modifier = Modifier){
                 )
                 //Mostrar el campo de texto para la prioridad
                 dynamicSelectTextField(
-                    selectedValue = prioridadActual,
-                    options = prioridades,
+                    selectedValue = uiStateTarea.prioridad,
+                    options = viewModel.listaPrioridad,
                     label = stringResource(R.string.prioridad),
                     onValueChangedEvent = {
-                        prioridadActual = it
+                        viewModel.onValueChangePrioridad(it)
                     }
                 )
             }

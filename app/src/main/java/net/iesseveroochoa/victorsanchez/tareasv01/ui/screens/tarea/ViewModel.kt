@@ -16,6 +16,7 @@ class TareaViewModel(application: Application): AndroidViewModel(application) {
     val listaPrioridad = context.resources.getStringArray(R.array.prioridad).toList()
     val PRIORIDAD_ALTA = listaPrioridad[0]
 
+
     private val _uiStateTarea = MutableStateFlow(UiStateTarea(
         prioridad = listaPrioridad[2]
     ))
