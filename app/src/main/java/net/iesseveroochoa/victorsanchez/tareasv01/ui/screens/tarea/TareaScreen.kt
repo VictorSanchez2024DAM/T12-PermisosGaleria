@@ -189,16 +189,8 @@ fun taskScreen(viewModel: TareaViewModel = viewModel(),
         //Mostrar el rating bar con la valoracion
         ratingBar(
             currentRating = uiStateTarea.valoracion,
-            onRatingChanged = { val nuevaValoracion = when(it)
-            {
-                1->5
-                2->4
-                3->3
-                4->2
-                5->1
-                else -> 0
-            }
-                viewModel.onRatingChanged(nuevaValoracion)
+            onRatingChanged = {
+                viewModel.onRatingChanged(it)
             }
         )
         //Mostrar el campo de texto para el tecnico y la descripcion con scroll vertical
@@ -223,7 +215,6 @@ fun taskScreen(viewModel: TareaViewModel = viewModel(),
                 label = R.string.descripcion,
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Done
                 ),
                 value = uiStateTarea.descripcion,
                 onValueChange = { viewModel.onValueChangeDescripcion(it) },
