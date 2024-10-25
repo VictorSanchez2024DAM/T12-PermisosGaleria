@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.Surface
-import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.taskScreen
+import net.iesseveroochoa.victorsanchez.tareasv01.ui.screens.tarea.taskScreen
 import net.iesseveroochoa.victorsanchez.tareasv01.ui.theme.TareasV01Theme
 
 class MainActivity : ComponentActivity() {
@@ -15,7 +15,8 @@ class MainActivity : ComponentActivity() {
         setContent {
                 TareasV01Theme {
                     Surface() {
-                        taskScreen()}
+                        taskScreen()
+                    }
 
                 }
 
