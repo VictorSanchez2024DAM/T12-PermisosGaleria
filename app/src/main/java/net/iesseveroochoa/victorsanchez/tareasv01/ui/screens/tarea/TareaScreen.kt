@@ -14,16 +14,22 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -43,6 +49,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import kotlinx.coroutines.launch
 import net.iesseveroochoa.victorsanchez.tareasv01.R
 import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.DialogoDeConfirmacion
@@ -50,14 +60,26 @@ import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.basicRadioButton
 import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.dynamicSelectTextField
 import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.ratingBar
 import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.showOutlinedTextField
+import net.iesseveroochoa.victorsanchez.tareasv01.ui.screens.listatareas.ListaTareasScreen
 
 
 /**
  * Función que muestra la interfaz de la aplicación tarea.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun taskScreen(viewModel: TareaViewModel = viewModel(),
-               modifier: Modifier = Modifier){
+fun taskScreen(
+    viewModel: TareaViewModel = viewModel(),
+    modifier: Modifier = Modifier,
+    onNavigateBack: () -> Unit,
+    tareaId: Long? = null
+){
+    // Cargar la tarea si el id no es nulo
+    LaunchedEffect(tareaId) {
+        if (tareaId != null) {
+            viewModel.getTarea(tareaId)
+        }
+    }
 
     val uiStateTarea by viewModel.uiStateTarea.collectAsState()
 
@@ -77,6 +99,21 @@ fun taskScreen(viewModel: TareaViewModel = viewModel(),
 
     // Muestra la interfaz de la aplicación con un Scaffold
     Scaffold(
+        topBar = {
+        TopAppBar(
+            title = {
+                Text(
+                    text = if (uiStateTarea.esTareaNueva) stringResource(R.string.nueva_tarea)
+                    else "${stringResource(R.string.editar_tarea)} - ID: ${viewModel.tarea?.id}"
+                )
+            },
+            navigationIcon = {
+                IconButton(onClick = onNavigateBack) {
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.volver))
+                }
+            }
+        )
+    },
         modifier = Modifier.fillMaxSize(),
         // Configura el SnackbarHost
         snackbarHost = { SnackbarHost(uiStateTarea.snackbarHostState) },
@@ -249,9 +286,24 @@ fun taskScreen(viewModel: TareaViewModel = viewModel(),
     }
 }
 
-// Vista previa de la funcion TaskScreen
-@Preview(showBackground = true)
+// Configuración de la Navegación
 @Composable
-fun TaskScreenPreview() {
-    taskScreen()
+fun AppNavigation() {
+    val navController = rememberNavController()
+
+    NavHost(navController = navController, startDestination = "lista_tareas") {
+        composable("lista_tareas") {
+            ListaTareasScreen(
+                onTareaClick = { tareaId -> navController.navigate("tarea/$tareaId") },
+                onNuevaTareaClick = { navController.navigate("tarea") }
+            )
+        }
+        composable("tarea/{tareaId}", arguments = listOf(navArgument("tareaId") { nullable = true })) { backStackEntry ->
+            val tareaId = backStackEntry.arguments?.getString("tareaId")?.toLongOrNull()
+            taskScreen(
+                tareaId = tareaId,
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+    }
 }

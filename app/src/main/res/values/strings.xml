@@ -11,6 +11,9 @@
     <string name="atenci_n">Atención</string>
     <string name="desea_guardar_los_cambios">Desea guardar los cambios?</string>
     <string name="guardar">guardar</string>
+    <string name="nueva_tarea">Nueva Tarea</string>
+    <string name="editar_tarea">Modificar Tarea</string>
+    <string name="volver">Volver</string>
     <string-array name="prioridad">
         <item>Alta</item>
         <item>Media</item>
