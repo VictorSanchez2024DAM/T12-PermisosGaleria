@@ -16,6 +16,7 @@ data class UiStateTarea(
     val colorFondo: Color = Color.Transparent,
     val esFormularioValido: Boolean = false,
     val mostrarDialogo: Boolean = false,
+    val esTareaNueva: Boolean = true,
     val snackbarHostState: SnackbarHostState,
     val scope: CoroutineScope
 )
