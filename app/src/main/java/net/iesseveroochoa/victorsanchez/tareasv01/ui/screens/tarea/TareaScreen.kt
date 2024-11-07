@@ -101,6 +101,7 @@ fun taskScreen(
                 onClick = { // Cuando se hace clic en el botón flotante se llama a la función onGuardar
                     if (uiStateTarea.esFormularioValido) {
                         viewModel.onGuardar()
+                        onNavigateBack()
                     } else {
                         uiStateTarea.scope.launch {
                             uiStateTarea.snackbarHostState.showSnackbar(
