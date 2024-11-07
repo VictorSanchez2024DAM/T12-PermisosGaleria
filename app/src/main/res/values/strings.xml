@@ -14,6 +14,10 @@
     <string name="nueva_tarea">Nueva Tarea</string>
     <string name="editar_tarea">Modificar Tarea</string>
     <string name="volver">Volver</string>
+    <string name="no_hay_tareas">No hay tareas</string>
+    <string name="lista_de_tareas">Lista de tareas</string>
+    <string name="rellene_todos_los_campos">Rellene todos los campos</string>
+
     <string-array name="prioridad">
         <item>Alta</item>
         <item>Media</item>
