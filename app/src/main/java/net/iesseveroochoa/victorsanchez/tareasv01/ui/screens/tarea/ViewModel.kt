@@ -159,6 +159,7 @@ class TareaViewModel(application: Application): AndroidViewModel(application) {
         _uiStateTarea.value = _uiStateTarea.value.copy(
             mostrarDialogo = true
         )
+        Repository.addTarea(uiStateToTarea())
     }
     //guardará los cambios, por el momento solo cierra el dialogo
     fun onConfirmarDialogoGuardar() {
