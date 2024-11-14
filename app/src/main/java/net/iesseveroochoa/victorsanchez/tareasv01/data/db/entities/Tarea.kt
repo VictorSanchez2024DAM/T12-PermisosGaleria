@@ -10,6 +10,7 @@ data class Tarea(
     val valoracionCliente:Int,
     val tecnico:String,
     val descripcion:String
+
 ) {
     companion object {
         var idContador = 1L//iniciamos contador de tareas

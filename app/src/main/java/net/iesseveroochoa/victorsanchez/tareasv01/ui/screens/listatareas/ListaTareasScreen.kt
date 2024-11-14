@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import net.iesseveroochoa.victorsanchez.tareasv01.R
 import net.iesseveroochoa.victorsanchez.tareasv01.data.db.entities.Tarea
 import androidx.lifecycle.viewmodel.compose.viewModel
+import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.ItemCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,9 +50,9 @@ fun ListaTareasScreen(
                     contentPadding = PaddingValues(16.dp)
                 ) {
                     items(uiState.listaTareas) { tarea ->
-                        TareaItem(
+                        ItemCard(
                             tarea = tarea,
-                            onClick = { onTareaClick(tarea.id!!) } // Navega a la tarea seleccionada para editar
+                            onClick = { onTareaClick(tarea.id!!) }
                         )
                         HorizontalDivider()
                     }
@@ -84,6 +85,5 @@ fun TareaItem(tarea: Tarea, onClick: () -> Unit) {
             Text(text = tarea.tecnico, style = MaterialTheme.typography.bodyLarge)
             Text(text = tarea.descripcion, style = MaterialTheme.typography.bodyMedium)
         }
-        // Puedes añadir más detalles de la tarea aquí
     }
 }

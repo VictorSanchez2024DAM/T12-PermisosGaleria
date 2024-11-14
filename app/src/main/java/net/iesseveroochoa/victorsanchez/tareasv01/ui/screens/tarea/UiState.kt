@@ -3,6 +3,7 @@ package net.iesseveroochoa.victorsanchez.tareasv01.ui.screens.tarea
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.ui.graphics.Color
 import kotlinx.coroutines.CoroutineScope
+import net.iesseveroochoa.victorsanchez.tareasv01.R
 
 // Clase que guarda el estado de la tarea
 data class UiStateTarea(
