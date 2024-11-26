@@ -1,5 +1,6 @@
 package net.iesseveroochoa.victorsanchez.tareasv01.ui.screens.listatareas
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,6 +11,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import net.iesseveroochoa.victorsanchez.tareasv01.R
@@ -17,6 +19,7 @@ import net.iesseveroochoa.victorsanchez.tareasv01.data.db.entities.Tarea
 import androidx.lifecycle.viewmodel.compose.viewModel
 import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.ItemCard
 
+// Composable para mostrar la lista de tareas en la pantalla
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListaTareasScreen(
@@ -27,10 +30,14 @@ fun ListaTareasScreen(
     // Obtenemos el estado actual de la lista de tareas
     val uiState by viewModel.listaTareasUiState.collectAsState()
 
+    // Obtenemos las categorías del contexto
+    val categorias = LocalContext.current.resources.getStringArray(R.array.categorias).toList()
+
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(R.string.lista_de_tareas)) }
+                title = { Text(text = stringResource(R.string.lista_de_tareas)) },
             )
         },
         floatingActionButton = {
@@ -41,7 +48,9 @@ fun ListaTareasScreen(
             }
         }
     ) { innerPadding ->
-        Column(modifier = Modifier.padding(innerPadding)) {
+        Column(modifier = Modifier
+            .padding(innerPadding)
+            .background(color = MaterialTheme.colorScheme.primary)) {
             // Verificamos si hay tareas para mostrar
             if (uiState.listaTareas.isNotEmpty()) {
                 // Lista de tareas
@@ -52,9 +61,10 @@ fun ListaTareasScreen(
                     items(uiState.listaTareas) { tarea ->
                         ItemCard(
                             tarea = tarea,
-                            onClick = { onTareaClick(tarea.id!!) }
+                            onClick = { onTareaClick(tarea.id!!) },
+                            listaCategorias = categorias
                         )
-                        HorizontalDivider()
+
                     }
                 }
             } else {
@@ -72,6 +82,7 @@ fun ListaTareasScreen(
     }
 }
 
+/*
 @Composable
 fun TareaItem(tarea: Tarea, onClick: () -> Unit) {
     Row(
@@ -86,4 +97,6 @@ fun TareaItem(tarea: Tarea, onClick: () -> Unit) {
             Text(text = tarea.descripcion, style = MaterialTheme.typography.bodyMedium)
         }
     }
-}
+    }
+ */
+

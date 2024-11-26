@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import net.iesseveroochoa.victorsanchez.tareasv01.R
 import net.iesseveroochoa.victorsanchez.tareasv01.data.db.entities.Tarea
 import net.iesseveroochoa.victorsanchez.tareasv01.data.repository.Repository
+import net.iesseveroochoa.victorsanchez.tareasv01.ui.theme.ColorPrioridad
 import net.iesseveroochoa.victorsanchez.tareasv01.ui.theme.ColorPrioridadAlta
 
 // Clase que guarda el estado de la tarea y gestiona los cambios de estado
@@ -43,7 +44,7 @@ class TareaViewModel(application: Application): AndroidViewModel(application) {
             esFormularioValido = tarea.tecnico.isNotBlank() && tarea.descripcion.isNotBlank(),
             esTareaNueva = false,
             colorFondo = if (PRIORIDAD_ALTA == listaPrioridad[tarea.prioridad])
-                ColorPrioridadAlta else Color.Transparent
+                ColorPrioridadAlta else ColorPrioridad
         )
     }
 
@@ -107,7 +108,7 @@ class TareaViewModel(application: Application): AndroidViewModel(application) {
         if (PRIORIDAD_ALTA == nuevaPrioridad)
             colorFondo = ColorPrioridadAlta
         else
-            colorFondo = Color.Transparent
+            colorFondo = ColorPrioridad
 
         _uiStateTarea.value = _uiStateTarea.value.copy(
             prioridad = nuevaPrioridad,

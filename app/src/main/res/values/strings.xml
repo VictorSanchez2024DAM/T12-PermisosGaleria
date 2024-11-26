@@ -17,6 +17,8 @@
     <string name="no_hay_tareas">No hay tareas</string>
     <string name="lista_de_tareas">Lista de tareas</string>
     <string name="rellene_todos_los_campos">Rellene todos los campos</string>
+    <string name="colapsar">Colapsar</string>
+    <string name="ver_m_s">Ver más</string>
 
     <string-array name="prioridad">
         <item>Alta</item>

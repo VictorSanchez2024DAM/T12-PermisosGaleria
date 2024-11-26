@@ -11,6 +11,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import net.iesseveroochoa.victorsanchez.tareasv01.R
 import net.iesseveroochoa.victorsanchez.tareasv01.data.db.entities.Tarea

@@ -4,16 +4,13 @@ package net.iesseveroochoa.victorsanchez.tareasv01.ui.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,9 +18,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import net.iesseveroochoa.victorsanchez.tareasv01.R
@@ -32,15 +31,17 @@ import net.iesseveroochoa.victorsanchez.tareasv01.data.db.entities.Tarea
 @Composable
 fun ItemCard(
     tarea: Tarea,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    listaCategorias: List<String> = emptyList(),
+    modifier: Modifier = Modifier
 ) {
     // Estado para controlar si el elemento está expandido o colapsado
     var isExpanded by remember { mutableStateOf(false) }
 
     // Color de fondo basado en la prioridad
     val colorPrioridad = when (tarea.prioridad) {
-        1 -> Color.Red // Prioridad alta
-        else -> Color.Transparent
+        0 -> MaterialTheme.colorScheme.tertiary // Prioridad alta
+        else -> MaterialTheme.colorScheme.secondary
     }
 
     Card(
@@ -61,7 +62,8 @@ fun ItemCard(
                 contentDescription = null,
                 modifier = Modifier
                     .width(100.dp)
-                    .height(120.dp),
+                    .height(120.dp)
+                    .clip(RoundedCornerShape(8.dp)), // Esquinas redondeadas
                 contentScale = ContentScale.Crop
             )
 
@@ -69,7 +71,7 @@ fun ItemCard(
 
             Column(
                 modifier = Modifier
-                    .fillMaxHeight()
+                    .fillMaxWidth()
                     .padding(8.dp)
             ) {
                 // Estado y categoría en una fila
@@ -94,14 +96,23 @@ fun ItemCard(
 
                     // Categoría de la tarea
                     val categoriaText = when (tarea.categoria) {
-                        0 -> "Reparación"
-                        1 -> "Instalación"
-                        2 -> "Mantenimiento"
-                        3 -> "Comercial"
-                        else -> "Otros"
+                        0 -> listaCategorias[0]
+                        1 -> listaCategorias[1]
+                        2 -> listaCategorias[2]
+                        3 -> listaCategorias[3]
+                        else -> listaCategorias[4]
                     }
                     Text(
-                        text = categoriaText, // Categoría seleccionada
+                        text = categoriaText,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.Gray
+                    )
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    // ID de la tarea alineado a la derecha
+                    Text(
+                        text = "#${tarea.id}",
                         style = MaterialTheme.typography.bodySmall,
                         color = Color.Gray
                     )
@@ -109,33 +120,38 @@ fun ItemCard(
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                // Botón de expansión and Text composables within the Column
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(
-                        onClick = { isExpanded = !isExpanded }
-                    ) {
-                        Icon(
-                            imageVector = if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                            contentDescription = if (isExpanded) "Colapsar" else "Expandir"
+                // Nombre del técnico
+                Text(
+                    text = tarea.tecnico,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.primary
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                // Descripción con control de expansión
+                Text(
+                    text = tarea.descripcion,
+                    maxLines = if (isExpanded) Int.MAX_VALUE else 2,
+                    overflow = if (isExpanded) TextOverflow.Visible else TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.bodySmall
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                // Botón para expandir/colapsar
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    TextButton(onClick = { isExpanded = !isExpanded }) {
+                        Text(
+                            text = if (isExpanded) stringResource(R.string.colapsar) else stringResource(R.string.ver_m_s),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.primary
                         )
                     }
-                    // Nombre del técnico
-                    Text(
-                        text = tarea.tecnico,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-
-                    // Descripción, con máximo de dos líneas
-                    Text(
-                        text = tarea.descripcion,
-                        maxLines = if (isExpanded) Int.MAX_VALUE else 2,
-                        overflow = if (isExpanded) TextOverflow.Visible else TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(top = 4.dp)
-                    )
                 }
-
             }
         }
     }

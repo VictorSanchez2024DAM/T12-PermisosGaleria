@@ -3,7 +3,8 @@ package net.iesseveroochoa.victorsanchez.tareasv01.ui.screens.tarea
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.ui.graphics.Color
 import kotlinx.coroutines.CoroutineScope
-import net.iesseveroochoa.victorsanchez.tareasv01.R
+import net.iesseveroochoa.victorsanchez.tareasv01.ui.theme.ColorPrioridad
+
 
 // Clase que guarda el estado de la tarea
 data class UiStateTarea(
@@ -14,7 +15,7 @@ data class UiStateTarea(
     val valoracion: Int = 0,
     val tecnico: String = "",
     val descripcion: String = "",
-    val colorFondo: Color = Color.Transparent,
+    val colorFondo: Color = ColorPrioridad,
     val esFormularioValido: Boolean = false,
     val mostrarDialogo: Boolean = false,
     val esTareaNueva: Boolean = true,
