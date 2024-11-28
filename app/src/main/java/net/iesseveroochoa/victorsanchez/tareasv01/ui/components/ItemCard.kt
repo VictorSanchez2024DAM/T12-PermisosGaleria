@@ -5,9 +5,12 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -32,6 +35,7 @@ import net.iesseveroochoa.victorsanchez.tareasv01.data.db.entities.Tarea
 fun ItemCard(
     tarea: Tarea,
     onClick: () -> Unit,
+    onClickBorrar: (Tarea) -> Unit = {},
     listaCategorias: List<String> = emptyList(),
     modifier: Modifier = Modifier
 ) {
@@ -124,7 +128,7 @@ fun ItemCard(
                 Text(
                     text = tarea.tecnico,
                     style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.onPrimary
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
@@ -148,9 +152,17 @@ fun ItemCard(
                         Text(
                             text = if (isExpanded) stringResource(R.string.colapsar) else stringResource(R.string.ver_m_s),
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.primary
+                            color = MaterialTheme.colorScheme.onPrimary
                         )
                     }
+                }
+
+                IconButton(onClick = { onClickBorrar(tarea) }) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = stringResource(R.string.borrar_tarea),
+                        tint = MaterialTheme.colorScheme.error
+                    )
                 }
             }
         }

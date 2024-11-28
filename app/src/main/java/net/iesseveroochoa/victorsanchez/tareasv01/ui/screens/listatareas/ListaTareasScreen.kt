@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import net.iesseveroochoa.victorsanchez.tareasv01.R
 import net.iesseveroochoa.victorsanchez.tareasv01.data.db.entities.Tarea
 import androidx.lifecycle.viewmodel.compose.viewModel
+import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.DialogoDeConfirmacion
 import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.ItemCard
 
 // Composable para mostrar la lista de tareas en la pantalla
@@ -30,8 +32,21 @@ fun ListaTareasScreen(
     // Obtenemos el estado actual de la lista de tareas
     val uiState by viewModel.listaTareasUiState.collectAsState()
 
+    // Obtenemos el estado actual del dialogo de confirmación
+    val dialogoConfirmacionUiState by viewModel.dialogoConfirmacionUiState.collectAsState()
+
     // Obtenemos las categorías del contexto
     val categorias = LocalContext.current.resources.getStringArray(R.array.categorias).toList()
+
+    if (dialogoConfirmacionUiState.mostrarDialogo) {
+        DialogoDeConfirmacion(
+            onDismissRequest = { viewModel.cancelarDialogo() },
+            onConfirmation = { viewModel.aceptarDialogo() },
+            dialogTitle = stringResource(R.string.confirmar_borrado),
+            dialogText = stringResource(R.string.confirmar_borrado_texto),
+            icon = Icons.Default.Delete
+        )
+    }
 
 
     Scaffold(
@@ -50,7 +65,7 @@ fun ListaTareasScreen(
     ) { innerPadding ->
         Column(modifier = Modifier
             .padding(innerPadding)
-            .background(color = MaterialTheme.colorScheme.primary)) {
+            .background(color = MaterialTheme.colorScheme.onPrimary)) {
             // Verificamos si hay tareas para mostrar
             if (uiState.listaTareas.isNotEmpty()) {
                 // Lista de tareas
@@ -62,6 +77,7 @@ fun ListaTareasScreen(
                         ItemCard(
                             tarea = tarea,
                             onClick = { onTareaClick(tarea.id!!) },
+                            onClickBorrar = { viewModel.onMostrarDialogoBorrar(tarea) },
                             listaCategorias = categorias
                         )
 

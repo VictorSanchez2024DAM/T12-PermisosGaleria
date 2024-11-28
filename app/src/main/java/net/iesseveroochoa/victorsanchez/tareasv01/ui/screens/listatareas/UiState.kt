@@ -7,5 +7,9 @@ import net.iesseveroochoa.victorsanchez.tareasv01.data.db.entities.Tarea
 
 data class ListaUiState(
     val listaTareas: List<Tarea> = listOf()
+)
 
+data class UiStateDialogo(
+    val mostrarDialogo: Boolean = false,
+    val tareaABorrar: Tarea? = null
 )
