@@ -6,9 +6,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import net.iesseveroochoa.victorsanchez.tareasv01.R
 import net.iesseveroochoa.victorsanchez.tareasv01.data.db.entities.Tarea
 import net.iesseveroochoa.victorsanchez.tareasv01.data.repository.Repository
@@ -78,9 +80,11 @@ class TareaViewModel(application: Application): AndroidViewModel(application) {
     }
 
     fun getTarea(id: Long) {
-        tarea = Repository.getTarea(id)
-        //si no es nueva inicia la UI con los valores de la tarea
-        if (tarea != null) tareaToUiState(tarea!!)
+        //lanzamos una corrutina que nos devuelve la tarea de la bd
+        viewModelScope.launch(Dispatchers.IO) {
+            tarea = Repository.getTarea(id)
+            if (tarea != null) tareaToUiState(tarea!!)
+        }
     }
 
     // guarda el estado de la tarea
@@ -160,13 +164,18 @@ class TareaViewModel(application: Application): AndroidViewModel(application) {
         _uiStateTarea.value = _uiStateTarea.value.copy(
             mostrarDialogo = true
         )
-        Repository.addTarea(uiStateToTarea())
+        //lanzamos la corrutina para guardar la tarea
+        viewModelScope.launch(Dispatchers.IO) {
+            Repository.addTarea(uiStateToTarea())
+        }
     }
-    //guardará los cambios, por el momento solo cierra el dialogo
+
     fun onConfirmarDialogoGuardar() {
+        //cierra el dialogo
         _uiStateTarea.value = _uiStateTarea.value.copy(
             mostrarDialogo = false
         )
+
     }
     //cierra el dialogo
     fun onCancelarDialogoGuardar() {
@@ -175,4 +184,6 @@ class TareaViewModel(application: Application): AndroidViewModel(application) {
         )
     }
 }
+
+
 
