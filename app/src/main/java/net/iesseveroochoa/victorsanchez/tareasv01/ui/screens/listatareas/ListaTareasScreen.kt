@@ -20,6 +20,7 @@ import net.iesseveroochoa.victorsanchez.tareasv01.data.db.entities.Tarea
 import androidx.lifecycle.viewmodel.compose.viewModel
 import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.DialogoDeConfirmacion
 import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.ItemCard
+import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.basicRadioButton
 
 // Composable para mostrar la lista de tareas en la pantalla
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,8 +36,12 @@ fun ListaTareasScreen(
     // Obtenemos el estado actual del dialogo de confirmación
     val dialogoConfirmacionUiState by viewModel.dialogoConfirmacionUiState.collectAsState()
 
+    // Obtenemos el estado actual del filtro
+    val filtroUiState by viewModel.filtroUiState.collectAsState()
+
     // Obtenemos las categorías del contexto
     val categorias = LocalContext.current.resources.getStringArray(R.array.categorias).toList()
+    val listaFiltrado = LocalContext.current.resources.getStringArray(R.array.filtro_estado).toList()
 
     if (dialogoConfirmacionUiState.mostrarDialogo) {
         DialogoDeConfirmacion(
@@ -66,6 +71,12 @@ fun ListaTareasScreen(
         Column(modifier = Modifier
             .padding(innerPadding)
             .background(color = MaterialTheme.colorScheme.onPrimary)) {
+            // Radio buttons para filtrar por estado
+            basicRadioButton(
+                radioOptions = viewModel.listaFiltrado,
+                selectedOption = filtroUiState.filtroEstado,
+                onOptionSelected = { viewModel.onCheckedChangeFiltroEstado(it) }
+            )
             // Verificamos si hay tareas para mostrar
             if (uiState.listaTareas.isNotEmpty()) {
                 // Lista de tareas
@@ -76,8 +87,8 @@ fun ListaTareasScreen(
                     items(uiState.listaTareas) { tarea ->
                         ItemCard(
                             tarea = tarea,
-                            onClick = { onTareaClick(tarea.id!!) },
-                            onClickBorrar = { viewModel.onMostrarDialogoBorrar(tarea) },
+                            onClick = { onTareaClick(tarea.id!!) }, // Abre la pantalla de detalles de la tarea
+                            onClickBorrar = { viewModel.onMostrarDialogoBorrar(tarea) }, // Muestra el dialogo de confirmación para borrar
                             listaCategorias = categorias
                         )
 
