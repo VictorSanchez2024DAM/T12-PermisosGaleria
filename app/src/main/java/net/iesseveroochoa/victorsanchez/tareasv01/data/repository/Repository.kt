@@ -4,8 +4,11 @@ import net.iesseveroochoa.victorsanchez.tareasv01.TareasApplication
 import net.iesseveroochoa.victorsanchez.tareasv01.data.db.dao.TareasDao
 import net.iesseveroochoa.victorsanchez.tareasv01.data.db.database.TareasDataBase
 import net.iesseveroochoa.victorsanchez.tareasv01.data.db.entities.Tarea
-import net.iesseveroochoa.victorsanchez.tareasv01.data.tempmodel.TempModelTareas
 
+
+/**
+ * Objeto singleton que proporciona acceso a los métodos CRUD de la base de datos
+ */
 object Repository {
     //modelo de datos
     private lateinit var modelTareas: TareasDao
@@ -22,5 +25,7 @@ object Repository {
     suspend fun getTarea(id:Long)= modelTareas.getTarea(id)
     fun getAllTareas()= modelTareas.getTareas()
     fun getTareasPorEstado(estado:Int)= modelTareas.getTareasPorEstado(estado)
+    fun getTareasSinPagar() = modelTareas.getTareasSinPagar()
+    fun getTareasPorEstadoYNoPagado(estado: Int) = modelTareas.getTareasPorEstadoYNoPagado(estado)
 
 }

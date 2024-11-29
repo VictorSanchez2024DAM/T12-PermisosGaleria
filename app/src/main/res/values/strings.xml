@@ -22,6 +22,7 @@
     <string name="confirmar_borrado">Confirmar borrado</string>
     <string name="confirmar_borrado_texto">¿Está seguro que desea borrar esta tarea?</string>
     <string name="borrar_tarea">Borrar tarea</string>
+    <string name="sin_pagar">Sin pagar</string>
 
 
     <string-array name="prioridad">

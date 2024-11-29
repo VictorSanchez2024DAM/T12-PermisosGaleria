@@ -1,7 +1,6 @@
 package net.iesseveroochoa.victorsanchez.tareasv01.ui.screens.listatareas
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -12,11 +11,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import net.iesseveroochoa.victorsanchez.tareasv01.R
-import net.iesseveroochoa.victorsanchez.tareasv01.data.db.entities.Tarea
 import androidx.lifecycle.viewmodel.compose.viewModel
 import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.DialogoDeConfirmacion
 import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.ItemCard
@@ -39,9 +38,12 @@ fun ListaTareasScreen(
     // Obtenemos el estado actual del filtro
     val filtroUiState by viewModel.filtroUiState.collectAsState()
 
+    // Obtenemos el estado actual del switch
+    val uiStateSinPagar by viewModel.uiStateSinPagar.collectAsState()
+
     // Obtenemos las categorías del contexto
     val categorias = LocalContext.current.resources.getStringArray(R.array.categorias).toList()
-    val listaFiltrado = LocalContext.current.resources.getStringArray(R.array.filtro_estado).toList()
+
 
     if (dialogoConfirmacionUiState.mostrarDialogo) {
         DialogoDeConfirmacion(
@@ -77,6 +79,23 @@ fun ListaTareasScreen(
                 selectedOption = filtroUiState.filtroEstado,
                 onOptionSelected = { viewModel.onCheckedChangeFiltroEstado(it) }
             )
+            // Switch para mostrar tareas sin pagar
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(R.string.sin_pagar),
+                    modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp)
+                )
+                Switch(
+                    checked = uiStateSinPagar.switchSinPagar,
+                    onCheckedChange = { viewModel.onSwitchSinPagarChanged(it) },
+                    modifier = Modifier.scale(0.8f) // Ajusta el tamaño del Switch
+                )
+            }
+
             // Verificamos si hay tareas para mostrar
             if (uiState.listaTareas.isNotEmpty()) {
                 // Lista de tareas

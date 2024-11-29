@@ -2,12 +2,12 @@ package net.iesseveroochoa.victorsanchez.tareasv01.ui.screens.listatareas
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -16,15 +16,17 @@ import net.iesseveroochoa.victorsanchez.tareasv01.R
 import net.iesseveroochoa.victorsanchez.tareasv01.data.db.entities.Tarea
 import net.iesseveroochoa.victorsanchez.tareasv01.data.repository.Repository
 
-
+/**
+ * ViewModel para la lista de tareas
+ */
 class ListaTareasViewModel(application: Application) : AndroidViewModel(application) {
 
     // cogemos el contexto de la aplicación
     private val context = application.applicationContext
 
     // Estado del dialogo
-    private val _uiState = MutableStateFlow(UiStateDialogo())
-    val dialogoConfirmacionUiState: StateFlow<UiStateDialogo> = _uiState
+    private val _uiStateDialogo = MutableStateFlow(UiStateDialogo())
+    val dialogoConfirmacionUiState: StateFlow<UiStateDialogo> = _uiStateDialogo
 
 
     // Lista de estados
@@ -36,22 +38,22 @@ class ListaTareasViewModel(application: Application) : AndroidViewModel(applicat
     ))
     val filtroUiState: StateFlow<UiStateFiltro> = _uiStateFiltro
 
-    //Estado de la lista dependerá del filtro de estado
-    val listaTareasUiState: StateFlow<ListaUiState> = _uiStateFiltro.flatMapLatest {
-        //cuando el filtro cambia, cambia la Select
-            uiStateFiltro ->
-        if (uiStateFiltro.filtroEstado == listaFiltrado[3])//todas
-            Repository.getAllTareas()
-        else//filtro estado
-            Repository.getTareasPorEstado(listaFiltrado.indexOf(uiStateFiltro.filtroEstado))
+    // Estado del switch
+    private val _uiStateSinPagar = MutableStateFlow(UiStateSinPagar())
+    val uiStateSinPagar: StateFlow<UiStateSinPagar> = _uiStateSinPagar
 
-    }
-        .map{ ListaTareas ->
-            ListaUiState(
-                listaTareas = ListaTareas
-            )
-
+    val listaTareasUiState: StateFlow<ListaUiState> = combine(
+        _uiStateFiltro,
+        _uiStateSinPagar
+    ) { uiStateFiltro, uiStateSinPagar ->
+        when {
+            uiStateSinPagar.switchSinPagar && uiStateFiltro.filtroEstado == listaFiltrado[3] -> Repository.getTareasSinPagar()
+            uiStateSinPagar.switchSinPagar -> Repository.getTareasPorEstadoYNoPagado(listaFiltrado.indexOf(uiStateFiltro.filtroEstado))
+            uiStateFiltro.filtroEstado == listaFiltrado[3] -> Repository.getAllTareas()
+            else -> Repository.getTareasPorEstado(listaFiltrado.indexOf(uiStateFiltro.filtroEstado))
         }
+    }.flatMapLatest { it }
+        .map { ListaTareas -> ListaUiState(listaTareas = ListaTareas) }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
@@ -69,7 +71,7 @@ class ListaTareasViewModel(application: Application) : AndroidViewModel(applicat
 
     // Muestra el dialogo para borrar una tarea
     fun onMostrarDialogoBorrar(tarea: Tarea) {
-        _uiState.value = _uiState.value.copy(
+        _uiStateDialogo.value = _uiStateDialogo.value.copy(
             mostrarDialogo = true,
             tareaABorrar = tarea
         )
@@ -77,7 +79,7 @@ class ListaTareasViewModel(application: Application) : AndroidViewModel(applicat
 
     // Cancela el dialogo para borrar una tarea
     fun cancelarDialogo() {
-        _uiState.value = _uiState.value.copy(
+        _uiStateDialogo.value = _uiStateDialogo.value.copy(
             mostrarDialogo = false,
             tareaABorrar = null
         )
@@ -85,7 +87,7 @@ class ListaTareasViewModel(application: Application) : AndroidViewModel(applicat
 
     // Borra la tarea actual
     fun aceptarDialogo() {
-        val tarea = _uiState.value.tareaABorrar ?: return
+        val tarea = _uiStateDialogo.value.tareaABorrar ?: return
         delTarea(tarea)
         cancelarDialogo()
     }
@@ -95,5 +97,10 @@ class ListaTareasViewModel(application: Application) : AndroidViewModel(applicat
         _uiStateFiltro.value=_uiStateFiltro.value.copy(
             filtroEstado = nuevoFiltroEstado
         )
+    }
+
+    // Cambia el estado del switch
+    fun onSwitchSinPagarChanged(isChecked: Boolean) {
+        _uiStateSinPagar.value = _uiStateSinPagar.value.copy(switchSinPagar = isChecked)
     }
 }
