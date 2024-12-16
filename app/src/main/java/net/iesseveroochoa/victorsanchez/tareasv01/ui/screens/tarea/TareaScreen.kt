@@ -43,7 +43,7 @@ import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.basicRadioButton
 import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.dynamicSelectTextField
 import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.ratingBar
 import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.showOutlinedTextField
-import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.topAppBar
+import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.topAppBarT
 
 
 /**
@@ -85,7 +85,7 @@ fun taskScreen(
     Scaffold(
         topBar = {
             // Llamamos a CustomTopAppBar y le pasamos el viewModel y la función de retroceso
-            topAppBar(
+            topAppBarT(
                 viewModel = viewModel,
                 onBackClick = onNavigateBack,
                 tareaId = tareaId

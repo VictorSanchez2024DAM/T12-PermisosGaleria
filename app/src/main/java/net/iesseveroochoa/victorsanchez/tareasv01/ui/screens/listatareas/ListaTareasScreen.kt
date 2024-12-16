@@ -1,12 +1,18 @@
 package net.iesseveroochoa.victorsanchez.tareasv01.ui.screens.listatareas
 
+import android.content.Intent
+import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,9 +23,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import net.iesseveroochoa.victorsanchez.tareasv01.R
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.launch
+import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.ActionItem
 import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.DialogoDeConfirmacion
 import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.ItemCard
 import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.basicRadioButton
+import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.topAppBarL
+
 
 // Composable para mostrar la lista de tareas en la pantalla
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,6 +39,20 @@ fun ListaTareasScreen(
     onNuevaTareaClick: () -> Unit,
     onTareaClick: (Long) -> Unit,
 ) {
+
+    // Creamos el snackbarHostState
+    val snackbarHostState = remember { SnackbarHostState() }
+    // Creamos el scope para las corrutinas
+    val scope = rememberCoroutineScope()
+    // Creamos la función para mostrar el snackbar
+    val muestraSnackBar: (String, SnackbarDuration) -> Unit = { mensaje, duration ->
+        scope.launch {
+            snackbarHostState.showSnackbar(
+                message = mensaje,
+                duration = duration
+            )
+        }
+    }
     // Obtenemos el estado actual de la lista de tareas
     val uiState by viewModel.listaTareasUiState.collectAsState()
 
@@ -57,9 +81,14 @@ fun ListaTareasScreen(
 
 
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        modifier = Modifier,
+
         topBar = {
-            TopAppBar(
-                title = { Text(text = stringResource(R.string.lista_de_tareas)) },
+            topAppBarL(
+                canGoBack = false,
+                listaAcciones = ListaAccionesToolBar(muestraSnackBar),
+                listaAccionesOverflow = ListaOverflowMenu(muestraSnackBar),
             )
         },
         floatingActionButton = {
@@ -126,6 +155,54 @@ fun ListaTareasScreen(
             }
         }
     }
+}
+
+/****
+ * Crean las acciones de la toolbar
+ *
+ * puede que las acciones necesiten de los estados y estados  de la pantalla actual,
+ * y sea necesario crear la lista en el mismo compose para crear las lambdas de las
+ * acciones
+ */
+@Composable
+private fun ListaAccionesToolBar(showSnackbar: (String, SnackbarDuration) -> Unit):List<ActionItem> {
+    val textSearch = stringResource(R.string.buscar)
+    val context = LocalContext.current
+    val website = "https://portal.edu.gva.es/03013224/va/inici/"
+    return listOf(
+        ActionItem(
+            textSearch,
+            Icons.Filled.Search,
+            action = { val intent = Intent(Intent.ACTION_VIEW, Uri.parse(website))
+                context.startActivity(intent) }
+        )
+    )
+}
+
+/**
+ * Crean las acciones del overflow menu
+ */
+@Composable
+private fun ListaOverflowMenu(showSnackbar: (String, SnackbarDuration) -> Unit):List<ActionItem> {
+    val textCall = stringResource(R.string.llamar)
+    val textAjustes = stringResource(R.string.ajustes)
+    val context = LocalContext.current
+    val phoneNumber = "966912260"
+    return listOf(
+        ActionItem(
+            textCall,
+            icon= Icons.Filled.Call,
+            action = { val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phoneNumber"))
+                context.startActivity(intent) }
+        ),
+        ActionItem(
+            textAjustes,
+            icon=Icons.Default.Settings,
+            action = { Toast.makeText(context, textAjustes, Toast.LENGTH_SHORT).show() }
+        )
+    )
+
+
 }
 
 /*
