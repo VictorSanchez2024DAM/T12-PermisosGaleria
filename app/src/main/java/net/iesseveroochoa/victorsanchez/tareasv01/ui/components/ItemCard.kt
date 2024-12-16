@@ -28,6 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import net.iesseveroochoa.victorsanchez.tareasv01.R
 import net.iesseveroochoa.victorsanchez.tareasv01.data.db.entities.Tarea
 
@@ -61,8 +62,8 @@ fun ItemCard(
                 .padding(8.dp)
         ) {
             // Imagen del técnico o de la tarea
-            Image(
-                painter = painterResource(id = tarea.img.toInt()), // Suponiendo que existe un recurso de imagen
+            AsyncImage(
+                model = tarea.img.toInt(), // Suponiendo que existe un recurso de imagen
                 contentDescription = null,
                 modifier = Modifier
                     .width(100.dp)
