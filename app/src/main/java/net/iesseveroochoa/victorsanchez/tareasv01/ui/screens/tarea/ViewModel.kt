@@ -46,7 +46,8 @@ class TareaViewModel(application: Application): AndroidViewModel(application) {
             esFormularioValido = tarea.tecnico.isNotBlank() && tarea.descripcion.isNotBlank(),
             esTareaNueva = false,
             colorFondo = if (PRIORIDAD_ALTA == listaPrioridad[tarea.prioridad])
-                ColorPrioridadAlta else ColorPrioridad
+                ColorPrioridadAlta else ColorPrioridad,
+            uriImagen = tarea.img
         )
     }
 
@@ -59,7 +60,7 @@ class TareaViewModel(application: Application): AndroidViewModel(application) {
             Tarea(
                 categoria = categorias.indexOf(uiStateTarea.value.categoria),
                 prioridad = listaPrioridad.indexOf(uiStateTarea.value.prioridad),
-                img = R.drawable.foto3.toString(),
+                img = uiStateTarea.value.uriImagen,
                 pagado = uiStateTarea.value.checked,
                 estado = radioOptions.indexOf(uiStateTarea.value.estado),
                 valoracionCliente = uiStateTarea.value.valoracion,
@@ -70,7 +71,7 @@ class TareaViewModel(application: Application): AndroidViewModel(application) {
             tarea!!.id,
             categoria = categorias.indexOf(uiStateTarea.value.categoria),
             prioridad = listaPrioridad.indexOf(uiStateTarea.value.prioridad),
-            img = tarea!!.img,
+            img = uiStateTarea.value.uriImagen,
             pagado = uiStateTarea.value.checked,
             estado = radioOptions.indexOf(uiStateTarea.value.estado),
             valoracionCliente = uiStateTarea.value.valoracion,
@@ -181,6 +182,12 @@ class TareaViewModel(application: Application): AndroidViewModel(application) {
     fun onCancelarDialogoGuardar() {
         _uiStateTarea.value = _uiStateTarea.value.copy(
             mostrarDialogo = false
+        )
+    }
+
+    fun setUri(uri: String) {
+        _uiStateTarea.value = _uiStateTarea.value.copy(
+            uriImagen = uri
         )
     }
 }

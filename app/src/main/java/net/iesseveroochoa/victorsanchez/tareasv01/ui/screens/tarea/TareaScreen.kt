@@ -1,5 +1,9 @@
 package net.iesseveroochoa.victorsanchez.tareasv01.ui.screens.tarea
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -31,9 +35,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -51,6 +57,8 @@ import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.dynamicSelectTex
 import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.ratingBar
 import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.showOutlinedTextField
 import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.topAppBarT
+import net.iesseveroochoa.victorsanchez.tareasv01.utils.loadFromUri
+import net.iesseveroochoa.victorsanchez.tareasv01.utils.saveBitmapImage
 
 
 /**
@@ -74,6 +82,12 @@ fun taskScreen(
     val uiStateTarea by viewModel.uiStateTarea.collectAsState()
     val message = stringResource(R.string.rellene_todos_los_campos)
 
+    // Creamos el scope para las corrutinas
+    val scope = rememberCoroutineScope()
+
+    // Creamos el context local
+    val context = LocalContext.current
+
     /*
     Permisos:
     Petición de permisos múltiples condicionales según la versión de Android
@@ -93,6 +107,25 @@ fun taskScreen(
             ) {
                 add(android.Manifest.permission.READ_MEDIA_IMAGES)
             }
+        }
+    )
+
+    /*
+        Llamada a Galeria versión por encima de Versión 13 en Android. Para usarlo en
+        versiones inferiores
+        tenéis incluir el Service de google que aparece en el manifest.xml
+    */
+    val launcherGaleria = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri: Uri? ->
+            //hacemos una copia de foto, ya que en las nuevas versiones solo nos deja acceso en esta sesión
+            //lanzamos una corrutina para que no se bloquee el hilo principal
+                    uri?.let {//si no es null
+                        scope.launch {
+                            val uriCopia = saveBitmapImage(context, loadFromUri(context, uri)!!)
+                            viewModel.setUri(uriCopia.toString())
+                        }
+                    }
         }
     )
 
@@ -183,7 +216,10 @@ fun taskScreen(
                 }
                 //Mostrar la imagen de la tarea
                 AsyncImage(
-                    model = R.drawable.tarea,
+                    model = if(uiStateTarea.uriImagen.isEmpty())
+                        R.drawable.no_image
+                    else
+                        uiStateTarea.uriImagen,
                     contentDescription = null,
                     modifier = modifier
                         .size(100.dp)
@@ -219,11 +255,18 @@ fun taskScreen(
                     onCheckedChange = { viewModel.onCheckedChange(it) },
                     modifier = Modifier.padding(5.dp)
                 )
-                // Añadir los iconos de búsqueda y cámara
+
                 Spacer(modifier = Modifier.width(50.dp))
                 IconButton(
                     onClick = { if(!permissionState.allPermissionsGranted)
-                        permissionState.launchMultiplePermissionRequest()}
+                        permissionState.launchMultiplePermissionRequest()
+                            else
+                                launcherGaleria.launch(
+                                    PickVisualMediaRequest(
+                                        ActivityResultContracts.PickVisualMedia.ImageOnly
+                                    )
+                                )
+                    }
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.ic_search),
@@ -239,7 +282,7 @@ fun taskScreen(
                         permissionState.launchMultiplePermissionRequest()}
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.ic_camera), // Reemplaza con tu icono de cámara
+                        painter = painterResource(R.drawable.ic_camera),
                         contentDescription = stringResource(R.string.hacer_foto),
                         modifier = Modifier
                             .size(24.dp)

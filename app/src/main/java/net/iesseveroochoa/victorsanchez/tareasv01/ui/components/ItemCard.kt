@@ -63,7 +63,10 @@ fun ItemCard(
         ) {
             // Imagen del técnico o de la tarea
             AsyncImage(
-                model = tarea.img.toInt(), // Suponiendo que existe un recurso de imagen
+                model = if(tarea.img.isEmpty())
+                            R.drawable.no_image
+                        else
+                            tarea.img,
                 contentDescription = null,
                 modifier = Modifier
                     .width(100.dp)
