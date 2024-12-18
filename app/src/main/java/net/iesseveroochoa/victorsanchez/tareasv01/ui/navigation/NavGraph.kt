@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import net.iesseveroochoa.victorsanchez.tareasv01.ui.screens.FotoScreen
 import net.iesseveroochoa.victorsanchez.tareasv01.ui.screens.listatareas.ListaTareasScreen
 import net.iesseveroochoa.victorsanchez.tareasv01.ui.screens.tarea.taskScreen
 
@@ -53,12 +54,37 @@ fun AppNavigation() {
                     targetOffsetX = { -it } // Hacia la izquierda
                 )
             }
-        ) { backStackEntry ->
+        )
+        { backStackEntry ->
             val tareaId = backStackEntry.arguments?.getString("tareaId")?.toLongOrNull()
             taskScreen(
                 tareaId = tareaId,
-                onNavigateBack = { navController.popBackStack() }
+                onNavigateBack = { navController.popBackStack()},
+                onFotoClick = {navController.navigate(FotoDestination)}
             )
+        }
+        composable(
+            route = FotoDestination,
+            enterTransition = {
+                slideInHorizontally(
+                    animationSpec = tween(1300),
+                    initialOffsetX = { it }
+                )
+            },
+            exitTransition = {
+                slideOutHorizontally(
+                    animationSpec = tween(1300),
+                    targetOffsetX = { it }
+                )
+            }
+        )
+        { backStackEntry ->
+            val fotoUri = backStackEntry.arguments?.getString("uriImagen") ?: ""
+                FotoScreen(
+                    fotoUri = fotoUri,
+                    onNavigateBack = { navController.popBackStack() }
+                )
+
         }
     }
 }

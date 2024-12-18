@@ -70,7 +70,8 @@ fun taskScreen(
     viewModel: TareaViewModel = viewModel(),
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit,
-    tareaId: Long? = null
+    tareaId: Long? = null,
+    onFotoClick: (String) -> Unit
 ) {
     // Cargar la tarea si el id no es nulo
     LaunchedEffect(tareaId) {
@@ -128,19 +129,6 @@ fun taskScreen(
                     }
         }
     )
-
-    // val categorias = stringArrayResource(id = R.array.categorias).toList()
-    // var categoriaActual by remember { mutableStateOf(categorias[0]) }
-    // val prioridades = stringArrayResource(id = R.array.prioridad).toList()
-    // var prioridadActual by remember { mutableStateOf(prioridades[2]) }
-    // var isChecked by remember { mutableStateOf(false) }
-    // val radioOptions = stringArrayResource(R.array.estado).toList()
-    // val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[0]) }
-    // var currentRating by remember { mutableIntStateOf(0) }
-    // var tecnicoValue by remember { mutableStateOf("") }
-    // var descripcionValue by remember { mutableStateOf("") }
-    // val PRIORIDAD_ALTA = prioridades[0]
-    // val colorFondo = if (PRIORIDAD_ALTA==prioridadActual) ColorPrioridadAlta else Color.Transparent
 
 
     // Muestra la interfaz de la aplicación con un Scaffold
@@ -226,7 +214,11 @@ fun taskScreen(
                         .padding(start = 5.dp)
                         .clip(RoundedCornerShape(20.dp))
                         .weight(1f)
+                        .clickable { onFotoClick(uiStateTarea.uriImagen) }
+
                 )
+
+
             }
             //Mostrar el Switch para el pago
             Row(

@@ -37,7 +37,7 @@ import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.topAppBarL
 fun ListaTareasScreen(
     viewModel: ListaTareasViewModel = viewModel(),
     onNuevaTareaClick: () -> Unit,
-    onTareaClick: (Long) -> Unit,
+    onTareaClick: (Long) -> Unit
 ) {
 
     // Creamos el snackbarHostState

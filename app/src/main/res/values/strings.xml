@@ -28,6 +28,7 @@
     <string name="ajustes">Ajustes</string>
     <string name="buscar_foto">Buscar foto en la galeria</string>
     <string name="hacer_foto">Hacer foto</string>
+    <string name="foto_en_grande">Foto en grande</string>
 
 
     <string-array name="prioridad">

@@ -30,6 +30,9 @@ class TareaViewModel(application: Application): AndroidViewModel(application) {
     //tarea
     var tarea: Tarea? = null
 
+
+    var tareaCargada = false
+
     /**
      *Carga los datos de la tarea en UiState,
      * que a su vez actualiza la interfaz de usuario *
@@ -81,10 +84,14 @@ class TareaViewModel(application: Application): AndroidViewModel(application) {
     }
 
     fun getTarea(id: Long) {
+        if(!tareaCargada){
+            tareaCargada = true
+
         //lanzamos una corrutina que nos devuelve la tarea de la bd
         viewModelScope.launch(Dispatchers.IO) {
             tarea = Repository.getTarea(id)
             if (tarea != null) tareaToUiState(tarea!!)
+        }
         }
     }
 
