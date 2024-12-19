@@ -1,5 +1,6 @@
 package net.iesseveroochoa.victorsanchez.tareasv01.ui.navigation
 
+import android.net.Uri
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
@@ -60,7 +61,9 @@ fun AppNavigation() {
             taskScreen(
                 tareaId = tareaId,
                 onNavigateBack = { navController.popBackStack()},
-                onFotoClick = {navController.navigate(FotoDestination)}
+                onFotoClick = {uriImagen ->
+                    val encodedUri = Uri.encode(uriImagen)
+                    navController.navigate(getFotoDestination(encodedUri))}
             )
         }
         composable(
@@ -79,7 +82,7 @@ fun AppNavigation() {
             }
         )
         { backStackEntry ->
-            val fotoUri = backStackEntry.arguments?.getString("uriImagen") ?: ""
+            val fotoUri = Uri.decode(backStackEntry.arguments?.getString("fotoUri") ?: "")
                 FotoScreen(
                     fotoUri = fotoUri,
                     onNavigateBack = { navController.popBackStack() }
