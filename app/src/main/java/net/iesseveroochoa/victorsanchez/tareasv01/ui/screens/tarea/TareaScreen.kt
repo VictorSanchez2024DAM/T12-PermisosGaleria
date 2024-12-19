@@ -57,6 +57,7 @@ import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.dynamicSelectTex
 import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.ratingBar
 import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.showOutlinedTextField
 import net.iesseveroochoa.victorsanchez.tareasv01.ui.components.topAppBarT
+import net.iesseveroochoa.victorsanchez.tareasv01.utils.creaUri
 import net.iesseveroochoa.victorsanchez.tareasv01.utils.loadFromUri
 import net.iesseveroochoa.victorsanchez.tareasv01.utils.saveBitmapImage
 
@@ -127,6 +128,20 @@ fun taskScreen(
                             viewModel.setUri(uriCopia.toString())
                         }
                     }
+        }
+    )
+    /*
+    permite pedir una foto y guardarla en una uri
+     */
+    var uriTemp: Uri? = null
+    val launcherPhoto = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture(),
+        onResult = { esCorrecto ->
+            if (esCorrecto) {
+                scope.launch {
+                    viewModel.setUri(uriTemp.toString())
+                }
+            }
         }
     )
 
@@ -271,7 +286,14 @@ fun taskScreen(
                 Spacer(modifier = Modifier.width(10.dp))
                 IconButton(
                     onClick = { if(!permissionState.allPermissionsGranted)
-                        permissionState.launchMultiplePermissionRequest()}
+                        permissionState.launchMultiplePermissionRequest()
+                        else
+                            uriTemp = creaUri(context)
+                            uriTemp?.let {
+                                launcherPhoto.launch(it)
+                            }
+
+                    }
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.ic_camera),
